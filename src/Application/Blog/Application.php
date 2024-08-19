@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Skolkovo22\Application;
+namespace Skolkovo22\Application\Blog;
 
+use Skolkovo22\Application\AbstractApplication;
 use Skolkovo22\Util\Dumper;
 use Throwable;
 
-class WebApplication extends AbstractApplication
+class Application extends AbstractApplication
 {
     private bool $isRunning = false;
 
@@ -22,8 +23,8 @@ class WebApplication extends AbstractApplication
 
         $this->isRunning = true;
         
-        $this->importConfigurationFrom(__DIR__ . '/../../config/base.php');
-        $this->importConfigurationFrom(__DIR__ . '/../../config/local.php');
+        $this->importConfigurationFrom(__DIR__ . '/../../../config/base.php');
+        $this->importConfigurationFrom(__DIR__ . '/../../../config/local.php');
 
         try {
             $this->runApplication();
@@ -70,10 +71,10 @@ class WebApplication extends AbstractApplication
      */
     private function setupCommonDependencies(): void
     {
-        $this->importContainerArguments(__DIR__ . '/../../config/services.php');
+        $this->importContainerArguments(__DIR__ . '/../../../config/services.php');
 
         foreach (
-            $this->arrayImporter->importArrayFrom(__DIR__ . '/../../config/di.php')
+            $this->arrayImporter->importArrayFrom(__DIR__ . '/../../../config/di.php')
             as $dependency => $service
         ) {
             $this->setDependency($dependency, $service);

@@ -1,6 +1,6 @@
 <?php
 
-use Skolkovo22\Application\WebApplication;
+use Skolkovo22\Application\Blog\Application;
 
 require_once __DIR__ . '/../autoload.php';
 
@@ -11,4 +11,4 @@ if ('cli' === PHP_SAPI) {
 ini_set('display_errors', true);
 error_reporting(E_ALL);
 
-(new WebApplication())->run();
+(new Application())->run();
