@@ -14,21 +14,24 @@ class WebApplication extends AbstractApplication
     /**
      * @return AbstractApplication
      */
-    public function build(): AbstractApplication
+    public function run(): void
     {
         if ($this->isRunning) {
-            return $this;
+            return;
         }
 
         $this->isRunning = true;
+        
+        $this->importConfigurationFrom(__DIR__ . '/../../config/base.php');
+        $this->importConfigurationFrom(__DIR__ . '/../../config/local.php');
 
         try {
-            $this->buildApplication();
+            $this->runApplication();
         } catch (Throwable $e) {
-            Dumper::dump($e);
+            'dev' === $this->getConfig('env')
+                ? Dumper::dump($e)
+                : Dumper::dump('Prodaction exception handler');
         }
-
-        return $this;
     }
 
     /**
@@ -36,10 +39,30 @@ class WebApplication extends AbstractApplication
      *
      * @throws Throwable
      */
-    private function buildApplication(): void
+    private function runApplication(): void
     {
-        $this->importConfigurationFrom(__DIR__ . '/../../config/base.php');
         $this->setupCommonDependencies();
+        
+        
+        $reflection = new \ReflectionClass(\Skolkovo22\Controller\DefaultController::class);
+
+        $constructor = $reflection->getConstructor();
+        if (!$constructor) {
+            $controller = $reflection->newInstance();
+        } else {
+            $args = [];
+            foreach ($constructor->getParameters() as $parameter) {
+                $args[] = $this->getDependency($parameter->getType()->getName());
+            }
+
+            $controller = $reflection->newInstanceArgs($args);
+        }
+
+        $response = $controller->index(new \Skolkovo22\Common\Http\Request());
+        $response->send();
+
+        Dumper::dump($response->getBody());
+        exit;
     }
 
     /**

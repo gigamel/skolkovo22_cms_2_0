@@ -48,9 +48,9 @@ abstract class AbstractApplication
     }
 
     /**
-     * @return AbstractApplication
+     * @return void
      */
-    abstract public function build(): AbstractApplication;
+    abstract public function run(): void;
 
     /**
      * @param string $option
