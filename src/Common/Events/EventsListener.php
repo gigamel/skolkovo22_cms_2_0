@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Events;
+namespace Skolkovo22\Common\Events;
 
 use Closure;
 

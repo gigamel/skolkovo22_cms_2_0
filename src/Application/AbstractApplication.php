@@ -2,33 +2,31 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace Skolkovo22\Application;
 
-use App\Common\DI\ContainerInterface;
-use App\Common\Loader\ArrayImporterInterface;
-use App\Common\Loader\ConfigLoader;
-use App\Common\Loader\ConfigLoaderInterface;
-use App\Common\Loader\PHPFileArrayImporter;
-use App\DI\SimpleContainer;
-use App\Common\Events\ListenerInterface;
-use App\Common\Events\EventsListener;
-use App\Util\Dumper;
+use Skolkovo22\Common\DI\ContainerInterface;
+use Skolkovo22\Common\Loader\ArrayImporterInterface;
+use Skolkovo22\Common\Loader\ConfigLoader;
+use Skolkovo22\Common\Loader\ConfigLoaderInterface;
+use Skolkovo22\Common\Loader\PHPFileArrayImporter;
+use Skolkovo22\DI\SimpleContainer;
+use Skolkovo22\Common\Events\ListenerInterface;
+use Skolkovo22\Common\Events\EventsListener;
 use Closure;
-use Throwable;
 
-final class Application
+abstract class AbstractApplication
 {
-    private float $startTime;
+    protected readonly float $startTime;
 
-    private int $startMemoryUsage;
+    protected readonly int $startMemoryUsage;
 
-    private bool $isRunning = false;
+    protected ContainerInterface $container;
 
-    private ContainerInterface $container;
+    protected ArrayImporterInterface $arrayImporter;
 
-    private ListenerInterface $listener;
+    protected ListenerInterface $listener;
 
-    private ConfigLoaderInterface $configLoader;
+    protected ConfigLoaderInterface $configLoader;
 
     /**
      * @param ContainerInterface|null $container
@@ -43,31 +41,16 @@ final class Application
         $this->startTime = microtime(true);
         $this->startMemoryUsage = memory_get_usage();
 
-        $this->container = $container ?? new SimpleContainer(new PHPFileArrayImporter());
+        $this->arrayImporter = new PHPFileArrayImporter();
+        $this->container = $container ?? new SimpleContainer($this->arrayImporter);
         $this->listener = $listener ?? new EventsListener();
-
-        $this->configLoader = $configLoader ?? new ConfigLoader(
-            new PHPFileArrayImporter()
-        );
+        $this->configLoader = $configLoader ?? new ConfigLoader($this->arrayImporter);
     }
 
     /**
-     * @return void
+     * @return AbstractApplication
      */
-    public function run(): void
-    {
-        if ($this->isRunning) {
-            return;
-        }
-
-        $this->isRunning = true;
-
-        try {
-            $this->runProcess();
-        } catch (Throwable $e) {
-            Dumper::dump($e);
-        }
-    }
+    abstract public function build(): AbstractApplication;
 
     /**
      * @param string $option
@@ -150,7 +133,7 @@ final class Application
     /**
      * @return float
      */
-    public function getExecutionTime(): float
+    final public function getExecutionTime(): float
     {
         return microtime(true) - $this->startTime;
     }
@@ -158,32 +141,8 @@ final class Application
     /**
      * @return int
      */
-    public function getMemoryusage(): int
+    final public function getMemoryusage(): int
     {
         return memory_get_usage() - $this->startMemoryUsage;
-    }
-
-    /**
-     * @return void
-     *
-     * @throws Throwable
-     */
-    private function runProcess(): void
-    {
-        $this->importConfigurationFrom(__DIR__ . '/../config/base.php');
-        $this->setupCommonDependencies();
-    }
-
-    /**
-     * @return void
-     */
-    private function setupCommonDependencies(): void
-    {
-        $this->importContainerArguments(__DIR__ . '/../config/services.php');
-
-        $dependecies = require_once(__DIR__ . '/../config/di.php');
-        foreach ($dependecies as $dependency => $service) {
-            $this->setDependency($dependency, $service);
-        }
     }
 }

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Log;
+namespace Skolkovo22\Service\Log;
 
-use App\Common\Logger\LoggerInterface;
-use App\Common\Stream\StreamInterface;
+use Skolkovo22\Common\Log\LoggerInterface;
+use Skolkovo22\Common\Stream\StreamInterface;
 
 final class Logger implements LoggerInterface
 {

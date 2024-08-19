@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Http;
+namespace Skolkovo22\Common\Http;
 
-use App\Application;
+use Skolkovo22\Application;
 
 abstract class AbstractController
 {

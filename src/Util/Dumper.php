@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Util;
+namespace Skolkovo22\Util;
 
 final class Dumper
 {

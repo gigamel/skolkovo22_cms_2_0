@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace Skolkovo22\Controller;
 
-use App\Common\Http\AbstractController;
+use Skolkovo22\Common\Http\AbstractController;
 
 final class DefaultController extends AbstractController
 {

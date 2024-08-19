@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\DI;
+namespace Skolkovo22\DI;
 
-use App\Common\DI\ContainerInterface;
-use App\Common\Loader\ArrayImporterInterface;
+use Skolkovo22\Common\DI\ContainerInterface;
+use Skolkovo22\Common\Loader\ArrayImporterInterface;
 use Exception;
 
 class SimpleContainer implements ContainerInterface

@@ -1,7 +1,7 @@
 <?php
 
-use App\Common\Logger\LoggerInterface;
-use App\Service\Log\Logger;
+use Skolkovo22\Common\Log\LoggerInterface;
+use Skolkovo22\Service\Log\Logger;
 
 return [
     LoggerInterface::class => Logger::class,

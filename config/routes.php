@@ -1,6 +1,6 @@
 <?php
 
-use App\Controller\DefaultController;
+use Skolkovo22\Controller\DefaultController;
 
 return [
     '/' => [

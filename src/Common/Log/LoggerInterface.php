@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Logger;
+namespace Skolkovo22\Common\Log;
 
 interface LoggerInterface
 {

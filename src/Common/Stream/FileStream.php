@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Common\Stream;
+namespace Skolkovo22\Common\Stream;
 
 final class FileStream implements StreamInterface
 {
