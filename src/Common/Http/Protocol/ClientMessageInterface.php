@@ -29,33 +29,14 @@ interface ClientMessageInterface
         self::METHOD_TRACE,
         self::METHOD_CONNECT,
     ];
-
-    /**
-     * @return string
-     */
+    
     public function getMethod(): string;
-
-    /**
-     * @return string
-     */
+    
     public function getPath(): string;
-
-    /**
-     * @return array
-     */
+    
     public function getHeaders(): array;
-
-    /**
-     * @param string $header
-     *
-     * @return string|null
-     */
+    
     public function getHeader(string $header): ?string;
-
-    /**
-     * @param string $header
-     *
-     * @return bool
-     */
+    
     public function hasHeader(string $header): bool;
 }

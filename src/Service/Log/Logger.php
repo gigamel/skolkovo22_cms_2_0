@@ -12,12 +12,7 @@ final class Logger implements LoggerInterface
     public function __construct(private StreamInterface $stream)
     {
     }
-
-    /**
-     * @param string $message
-     *
-     * @return void
-     */
+    
     public function info(string $message): void
     {
         $this->stream->write($message . PHP_EOL);

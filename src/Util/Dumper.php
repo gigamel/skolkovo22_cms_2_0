@@ -6,11 +6,6 @@ namespace Skolkovo22\Util;
 
 final class Dumper
 {
-    /**
-     * @param mixed $var
-     *
-     * @return void
-     */
     public static function dump(mixed $var, bool $die = false): void
     {
         echo sprintf(

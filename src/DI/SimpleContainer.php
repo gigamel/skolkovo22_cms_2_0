@@ -17,12 +17,7 @@ class SimpleContainer implements ContainerInterface
     public function __construct(private readonly ArrayImporterInterface $importer)
     {
     }
-
-    /**
-     * @param string $file
-     *
-     * @return void
-     */
+    
     public function importArguments(string $file): void
     {
         $this->_arguments = array_replace_recursive(
@@ -32,11 +27,6 @@ class SimpleContainer implements ContainerInterface
     }
 
     /**
-     * @param string $interfaceOrClassName
-     * @param string $className
-     *
-     * @return void
-     *
      * @throws Exception
      */
     public function setDependency(string $interfaceOrClassName, string $className): void
@@ -51,10 +41,6 @@ class SimpleContainer implements ContainerInterface
     }
 
     /**
-     * @param string $interfaceOrClassName
-     *
-     * @return object
-     *
      * @throws Exception
      */
     public function getDependency(string $interfaceOrClassName): object

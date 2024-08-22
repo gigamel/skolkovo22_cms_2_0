@@ -21,34 +21,17 @@ interface ServerMessageInterface
         self::STATUS_NOT_FOUND => 'Not Found',
         self::STATUS_INTERNAL_SERVER_ERROR => 'Internal Server Error',
     ];
-
-    /**
-     * @return string
-     */
+    
     public function getBody(): string;
-
-    /**
-     * @param string $header
-     * @param string $value
-     *
-     * @return void
-     */
+    
     public function addHeader(string $header, string $value): void;
 
     /**
      * @param string[] $headers
-     *
-     * @return void
      */
     public function addHeaders(array $headers = []): void;
-
-    /**
-     * @return int
-     */
+    
     public function getStatusCode(): int;
-
-    /**
-     * @return void
-     */
+    
     public function send(): void;
 }

@@ -11,12 +11,7 @@ class ConfigLoader implements ConfigLoaderInterface
     public function __construct(protected readonly ArrayImporterInterface $importer)
     {
     }
-
-    /**
-     * @param string $file
-     *
-     * @return void
-     */
+    
     public function importFrom(string $file): void
     {
         $this->_config = array_replace_recursive(
@@ -24,13 +19,7 @@ class ConfigLoader implements ConfigLoaderInterface
             $this->importer->importArrayFrom($file)
         );
     }
-
-    /**
-     * @param string $option
-     * @param mixed $default
-     *
-     * @return mixed
-     */
+    
     public function getConfig(string $option, mixed $default = null): mixed
     {
         $options = explode('.', $option);

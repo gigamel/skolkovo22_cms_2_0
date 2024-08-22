@@ -6,14 +6,16 @@ namespace Skolkovo22\Common\Http;
 
 use Skolkovo22\Common\Http\Protocol\ServerMessageInterface;
 
+use function header;
+use function headers_sent;
+use function sprintf;
+
 class Response implements ServerMessageInterface
 {
     /** @var string[] */
     protected array $headers = [];
     
     /**
-     * @param string $body
-     * @param int $statusCode
      * @param string[] $headers
      */
     public function __construct(
@@ -24,20 +26,11 @@ class Response implements ServerMessageInterface
         $this->addHeaders($headers);
     }
     
-    /**
-     * @return string
-     */
     public function getBody(): string
     {
         return $this->body;
     }
-
-    /**
-     * @param string $header
-     * @param string $value
-     *
-     * @return void
-     */
+    
     public function addHeader(string $header, string $value): void
     {
         $this->headers[$header] = $value;
@@ -45,8 +38,6 @@ class Response implements ServerMessageInterface
 
     /**
      * @param string[] $headers
-     *
-     * @return void
      */
     public function addHeaders(array $headers = []): void
     {
@@ -55,17 +46,11 @@ class Response implements ServerMessageInterface
         }
     }
     
-    /**
-     * @return int
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
-
-    /**
-     * @return void
-     */
+    
     public function send(): void
     {
         if (headers_sent()) {
