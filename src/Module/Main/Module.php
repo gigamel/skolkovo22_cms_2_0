@@ -12,7 +12,7 @@ final class Module extends AbstractModule implements EventsSubscriberInterface
 {
     public function subscribeEvents(ListenerInterface $listener): void
     {
-        $listener->subscribeEvent('main.request', static function (\Skolkovo22\Application\Example\Application $app): bool {
+        $listener->subscribeEvent('main.request', static function (\Skolkovo22\Http\AbstractApplication $app): bool {
             var_dump($app->getConfig('env'));
             return true;
         });

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Skolkovo22\Application\Example;
+namespace Skolkovo22\Application;
 
-use Skolkovo22\Application\AbstractApplication;
+use Skolkovo22\Http\AbstractApplication;
 use Throwable;
 
 use function error_reporting;
 use function ini_set;
 
-class Application extends AbstractApplication
+class ExampleApplication extends AbstractApplication
 {
     private const string ENV_DEV = 'dev';
     
@@ -52,8 +52,8 @@ class Application extends AbstractApplication
     
     private function configurationProcess(): void
     {
-        $this->importConfigurationFrom(__DIR__ . '/../../../config/base.php');
-        $this->importConfigurationFrom(__DIR__ . '/../../../config/local.php');
+        $this->importConfigurationFrom(__DIR__ . '/../../config/base.php');
+        $this->importConfigurationFrom(__DIR__ . '/../../config/local.php');
         
         if ($this->envIsDev()) {
             ini_set('display_errors', true);
@@ -63,7 +63,7 @@ class Application extends AbstractApplication
     
     private function setupCommonDependencies(): void
     {
-        $this->importContainerArguments(__DIR__ . '/../../../config/services.php');
+        $this->importContainerArguments(__DIR__ . '/../../config/services.php');
 
         foreach (
             $this->arrayImporter->importArrayFrom(
@@ -78,7 +78,7 @@ class Application extends AbstractApplication
     {
         foreach (
             $this->arrayImporter->importArrayFrom(
-                __DIR__ . '/../../../config/modules.php'
+                __DIR__ . '/../../config/modules.php'
             ) as $moduleClass
         ) {
             $module = new $moduleClass();
