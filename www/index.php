@@ -1,6 +1,6 @@
 <?php
 
-use Skolkovo22\Application\Blog\Application;
+use Skolkovo22\Application\Example\Application;
 
 require_once __DIR__ . '/../autoload.php';
 
