@@ -13,11 +13,11 @@ final class FileStream implements StreamInterface
     /**
      * @throws Exception
      */
-    public function __construct(string $filename, string $mode = 'a')
+    public function __construct(string $file, string $mode = 'a')
     {
-        $this->resource = fopen($filename, $mode);
+        $this->resource = fopen($file, $mode);
         if (!$this->resource) {
-            throw new Exception(sprintf('Could not open [%s]', $filename));
+            throw new Exception(sprintf('Could not open [%s]', $file));
         }
     }
     

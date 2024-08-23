@@ -30,8 +30,11 @@ class ExampleApplication extends AbstractApplication
             $this->runApplication();
         } catch (Throwable $e) {
             if ($this->envIsDev()) {
-                var_dump($e);
+                $this->dump($e);
+                return;
             }
+            
+            $this->dump('Page Not Found');
         }
     }
     
@@ -49,8 +52,7 @@ class ExampleApplication extends AbstractApplication
         $this->importConfigurations();
         $this->setupCommonDependencies();
         $this->bootModules();
-        
-        $this->triggerEvent('modules.loaded', $this);
+        $this->routerProcess();
     }
     
     private function setupAliases(): void
@@ -64,19 +66,25 @@ class ExampleApplication extends AbstractApplication
         $this->importConfigurationFrom(self::getAlias('@config/local.php'));
     }
     
+    /**
+     * @throws Exception
+     */
     private function setupCommonDependencies(): void
     {
-        $this->importContainerArguments(self::getAlias('@config/services.php'));
+        $this->importContainerArguments(self::getAlias('@config/di.php'));
 
         foreach (
             $this->arrayImporter->importArrayFrom(
-                self::getAlias('@config/di.php')
+                self::getAlias('@config/services.php')
             ) as $dependency => $service
         ) {
             $this->setDependency($dependency, $service);
         }
     }
     
+    /**
+     * @throws Exception
+     */
     private function bootModules(): void
     {
         foreach (
@@ -99,5 +107,29 @@ class ExampleApplication extends AbstractApplication
                 );
             }
         }
+    }
+    
+    private function routerProcess(): void
+    {
+        try {
+            $route = $this->getDependency(\Skolkovo22\Common\Http\RouterInterface::class)->handle(new \Skolkovo22\Common\Http\Request());
+            $this->onRouteFound($route);
+        } catch (Exception $e) {
+            $this->triggerEvent('route.notfound', $e);
+            throw $e;
+        }
+    }
+    
+    private function onRouteFound(\Skolkovo22\Common\Http\RouteInterface $route): void
+    {
+        $this->triggerEvent('route.found', $route);
+        
+        $controllerClass = $route->getController();
+        $controller = new $controllerClass();
+        $response = $controller->{$route->getAction()}(new \Skolkovo22\Common\Http\Request());
+        $response->send();
+        
+        echo $response->getBody();
+        die();
     }
 }

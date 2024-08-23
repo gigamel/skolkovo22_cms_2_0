@@ -1,8 +1,10 @@
 <?php
 
-use Skolkovo22\Common\Log\LoggerInterface;
-use Skolkovo22\Service\Log\Logger;
+use Skolkovo22\Common\Stream\StreamInterface;
+use Skolkovo22\Common\Http\RoutesCollectionInterface;
 
 return [
-    LoggerInterface::class => Logger::class,
+    StreamInterface::class => [
+        'file' => __DIR__ . '/../var/log/info.log',
+    ],
 ];

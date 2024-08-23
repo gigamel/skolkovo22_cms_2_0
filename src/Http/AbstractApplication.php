@@ -17,6 +17,9 @@ use Closure;
 
 abstract class AbstractApplication
 {
+    protected const string HTML_DUMP = '<pre%s>%s</pre>';
+    protected const string STYLES_DUMP = ' style="border:1px solid purple;padding:15px;"';
+    
     protected static array $_aliases = [];
     
     protected readonly float $startTime;
@@ -101,5 +104,10 @@ abstract class AbstractApplication
     final public function getExecutionTime(): float
     {
         return microtime(true) - $this->startTime;
+    }
+    
+    final public function dump(mixed $var): void
+    {
+        echo sprintf(self::HTML_DUMP, self::STYLES_DUMP, var_export($var, true));
     }
 }
