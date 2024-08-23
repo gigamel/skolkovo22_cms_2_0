@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Skolkovo22\Application;
 
+use Exception;
 use Skolkovo22\Http\AbstractApplication;
+use Skolkovo22\Http\AbstractModule;
 use Throwable;
 
 use function error_reporting;
@@ -43,52 +45,58 @@ class ExampleApplication extends AbstractApplication
      */
     private function runApplication(): void
     {
-        $this->configurationProcess();
+        $this->setupAliases();
+        $this->importConfigurations();
         $this->setupCommonDependencies();
-        $this->loadModules();
+        $this->bootModules();
         
-        $this->triggerEvent('main.request', $this);
+        $this->triggerEvent('modules.loaded', $this);
     }
     
-    private function configurationProcess(): void
+    private function setupAliases(): void
     {
-        $this->importConfigurationFrom(__DIR__ . '/../../config/base.php');
-        $this->importConfigurationFrom(__DIR__ . '/../../config/local.php');
-        
-        if ($this->envIsDev()) {
-            ini_set('display_errors', true);
-            error_reporting(E_ALL);
-        }
+        self::setAlias('@config', __DIR__ . '/../../config');
+    }
+    
+    private function importConfigurations(): void
+    {
+        $this->importConfigurationFrom(self::getAlias('@config/base.php'));
+        $this->importConfigurationFrom(self::getAlias('@config/local.php'));
     }
     
     private function setupCommonDependencies(): void
     {
-        $this->importContainerArguments(__DIR__ . '/../../config/services.php');
+        $this->importContainerArguments(self::getAlias('@config/services.php'));
 
         foreach (
             $this->arrayImporter->importArrayFrom(
-                __DIR__ . '/../../../config/di.php'
+                self::getAlias('@config/di.php')
             ) as $dependency => $service
         ) {
             $this->setDependency($dependency, $service);
         }
     }
     
-    private function loadModules(): void
+    private function bootModules(): void
     {
         foreach (
             $this->arrayImporter->importArrayFrom(
-                __DIR__ . '/../../config/modules.php'
+                self::getAlias('@config/modules.php')
             ) as $moduleClass
         ) {
-            $module = new $moduleClass();
-            
-            if ($module instanceof \Skolkovo22\Http\EventsSubscriberInterface) {
-                $module->subscribeEvents($this->getListener());
+            if (is_a($moduleClass, AbstractModule::class, true)) {
+                (new $moduleClass())->boot($this);
+                continue;
             }
             
-            if ($module instanceof \Skolkovo22\Http\DependenciesProviderInterface) {
-                $module->setupDependencies($this->getContainer());
+            if ($this->envIsDev()) {
+                throw new Exception(
+                    sprintf(
+                        'Module [%s] should be intanceof [%s]',
+                        $moduleClass,
+                        AbstractModule::class
+                    )
+                );
             }
         }
     }

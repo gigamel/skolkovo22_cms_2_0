@@ -17,6 +17,8 @@ use Closure;
 
 abstract class AbstractApplication
 {
+    protected static array $_aliases = [];
+    
     protected readonly float $startTime;
 
     protected ContainerInterface $container;
@@ -40,6 +42,20 @@ abstract class AbstractApplication
     }
     
     abstract public function run(): void;
+    
+    public static function setAlias(string $alias, string $path): void
+    {
+        self::$_aliases[$alias] = $path;
+    }
+    
+    public static function getAlias(string $aliasPath): string
+    {
+        foreach (self::$_aliases as $alias => $path) {
+            $aliasPath = str_replace($alias, $path, $aliasPath);
+        }
+        
+        return $aliasPath;
+    }
     
     public function getConfig(string $option, mixed $default = null): mixed
     {
@@ -85,15 +101,5 @@ abstract class AbstractApplication
     final public function getExecutionTime(): float
     {
         return microtime(true) - $this->startTime;
-    }
-    
-    final public function getContainer(): ContainerInterface
-    {
-        return $this->container;
-    }
-    
-    final public function getListener(): ListenerInterface
-    {
-        return $this->listener;
     }
 }
